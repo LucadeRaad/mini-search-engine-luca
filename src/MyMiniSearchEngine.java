@@ -18,29 +18,28 @@ public class MyMiniSearchEngine {
     // each item in the List is considered a document.
     // assume documents only contain alphabetical words separated by white spaces.
     private void index(List<String> texts) {
+        // Where all info is stored
         indexes = new HashMap<>();
-        List<List<Integer>> document = new ArrayList<>();
-
-        // We will be putting two arraylists, one holds the document, and the other holds every location that the word appears in the document
-        //for(int i = 0; i < texts.size(); i++)
-
 
         // this splits up and sets up the keys. now need to have the values
-        for(int i = 0; i < texts.size(); i++) {
-            // Adding new arraylists
-            ArrayList thisDocument = new ArrayList<>();
-            thisDocument.add(i);
-            document.add(thisDocument);
+        for (int i = 0; i < texts.size(); i++) {
             // splits up the list of strings into an array
             String sentence = texts.get(i);
             String[] words = sentence.split("\\s+"); // Took from stackoverflow
             // Can go through each individual element of the array
             for (int j = 0; j < words.length; j++) { // Took from class
-                if (indexes.containsKey(words[j])) {
-                    thisDocument.add(j);
-                    indexes.put(words[j], document);
-                }
-                indexes.put(words[j], document);
+                // Creating the lists here to stop overwritting of data
+                List<List<Integer>> document = new ArrayList<>();
+                for (int a = 0; a < texts.size(); a++)
+                    document.add(new ArrayList<>());
+
+                // This is to stop overwriting, If the word we're checking already exists, we need to make sure document has all the old values
+                if (indexes.containsKey(words[j]))
+                    document = indexes.get(words[j]);
+                // .get allows for multiple inputs into one arraylist
+                document.get(i).add(j);
+
+                indexes.put(words[j].toLowerCase(), document);
             }
         }
         System.out.println(indexes.toString());
